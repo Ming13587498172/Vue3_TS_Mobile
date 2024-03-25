@@ -21,6 +21,7 @@ declare module 'vue' {
     VarCell: typeof import('@varlet/ui')['_CellComponent']
     VarIcon: typeof import('@varlet/ui')['_IconComponent']
     VarImage: typeof import('@varlet/ui')['_ImageComponent']
+    VarInput: typeof import('@varlet/ui')['_InputComponent']
     VarList: typeof import('@varlet/ui')['_ListComponent']
     VarMenu: typeof import('@varlet/ui')['_MenuComponent']
     VarPullRefresh: typeof import('@varlet/ui')['_PullRefreshComponent']
