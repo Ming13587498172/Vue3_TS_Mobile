@@ -30,7 +30,7 @@
             </div>
             <div class="section">
               <div v-for="goods in item.goods" :key="goods.id" class="goods" hover-class="none"
-                :url="`/pages/goods/goods?id=${ goods.id }`">
+                :url="`/pages/goods/goods?id=${goods.id}`">
                 <var-image class="image" :src="goods.picture"></var-image>
                 <p class="name ellipsis">{{ goods.name }}</p>
                 <div class="price">
