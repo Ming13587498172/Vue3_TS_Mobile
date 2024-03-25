@@ -2,39 +2,42 @@
   <div class="categoryBox">
     <!-- 搜索框 -->
     <div class="search">
-      <div class="input">
-        <span class="icon-search">女靴</span>
-      </div>
+      <var-input variant="outlined" size="small" placeholder="女靴">
+        <template #prepend-icon>
+          <var-icon name="magnify" />
+        </template>
+      </var-input>
     </div>
     <div class="categoryContent">
       <!-- 分类 -->
       <div class="categories">
         <!-- 左侧：一级分类 -->
         <div class="primary">
-          <ul v-for="(item, index) in 10" :key="item" class="item" :class="{ active: index === 0 }">
-            <li class="name"> 居家 </li>
+          <ul v-for="(item, index) in categoryList" :key="item.id" class="item"
+            :class="{ active: activeIndex === index }">
+            <li class="name" @click="activeIndex = index"> {{ item.name }} </li>
           </ul>
         </div>
         <!-- 右侧：二级分类 -->
         <div class="secondary">
           <!-- 焦点图 -->
-          <XtxSwiper class="banner" :list="[]" />
+          <Swiper class="banner" :list="bannerList"></Swiper>
           <!-- 内容区域 -->
-          <div class="panel" v-for="item in 3" :key="item">
+          <div class="panel" v-for="item in subCategoryList" :key="item.id">
             <div class="title">
               <span class="name">宠物用品</span>
-              <navigator class="more" hover-class="none">全部</navigator>
+              <span class="more" hover-class="none">全部<var-icon name="chevron-right" /></span>
             </div>
             <div class="section">
-              <navigator v-for="goods in 4" :key="goods" class="goods" hover-class="none" :url="`/pages/goods/goods?id=`">
-                <image class="image" src="https://yanxuan-item.nosdn.127.net/674ec7a88de58a026304983dd049ea69.jpg">
-                </image>
-                <div class="name ellipsis">木天蓼逗猫棍</div>
+              <div v-for="goods in item.goods" :key="goods.id" class="goods" hover-class="none"
+                :url="`/pages/goods/goods?id=${goods.id}`">
+                <var-image class="image" :src="goods.picture"></var-image>
+                <p class="name ellipsis">{{ goods.name }}</p>
                 <div class="price">
-                  <text class="symbol">¥</text>
-                  <text class="number">16.00</text>
+                  <span class="symbol">¥</span>
+                  <span class="number">{{ goods.price }}</span>
                 </div>
-              </navigator>
+              </div>
             </div>
           </div>
         </div>
@@ -45,7 +48,49 @@
 </template>
 
 <script setup lang="ts">
+import { getCategoryTopAPI } from '@/api/category';
+import { getHomeBannerAPI } from '@/api/index';
 import BottomBar from '@/components/BottomBar/index.vue'
+import { BannerItem } from '@/type';
+import { CategoryTopItem } from '@/type/category';
+import { computed, onMounted, ref } from 'vue';
+
+// 是否加载完毕
+// const isFinish = ref(false)
+// 高亮的下标
+const activeIndex = ref(0)
+
+onMounted(() => {
+  getHomeBannerData()
+  getCategoryTopData()
+})
+
+// 获取轮播图数据
+const bannerList = ref<BannerItem[]>([])
+const getHomeBannerData = async () => {
+  try {
+    const { result } = await getHomeBannerAPI()
+    bannerList.value = result
+  } catch (err) {
+
+  }
+}
+
+// 获取分类列表数据
+const categoryList = ref<CategoryTopItem[]>([])
+const getCategoryTopData = async () => {
+  try {
+    const { result } = await getCategoryTopAPI()
+    categoryList.value = result
+  } catch (err) {
+
+  }
+}
+
+// 提取当前二级分类数据
+const subCategoryList = computed(() => {
+  return categoryList.value[activeIndex.value]?.children
+})
 </script>
 
 <style scoped lang="scss">
@@ -54,8 +99,9 @@ import BottomBar from '@/components/BottomBar/index.vue'
   height: 100vh;
   display: flex;
   flex-direction: column;
+
   .search {
-    padding: 0 30px 20px;
+    padding: 10px;
     background-color: #fff;
 
     .input {
@@ -69,6 +115,7 @@ import BottomBar from '@/components/BottomBar/index.vue'
       border-radius: 32px;
       background-color: #f3f4f4;
     }
+
     .icon-search {
       &::before {
         margin-right: 10px;
@@ -93,7 +140,7 @@ import BottomBar from '@/components/BottomBar/index.vue'
 
     /* 一级分类 */
     .primary {
-      overflow: hidden;
+      overflow: auto;
       width: 80px;
       flex: none;
       background-color: #f6f6f6;
@@ -141,38 +188,39 @@ import BottomBar from '@/components/BottomBar/index.vue'
 
     /* 二级分类 */
     .secondary {
+      padding: 0 10px 10px;
+      width: calc(100% - 80px);
+      height: 100%;
+      overflow: auto;
       background-color: #fff;
 
-      .carousel {
-        height: 200px;
-        margin: 0 30px 20px;
+      .banner {
+        width: 100%;
+        height: 120px;
         border-radius: 4px;
         overflow: hidden;
       }
 
       .panel {
-        margin: 0 30px 0px;
-      }
+        margin: 0 10px 0px;
 
-      .title {
-        height: 60px;
-        line-height: 60px;
-        color: #333;
-        font-size: 28px;
-        border-bottom: 1px solid #f7f7f8;
+        .title {
+          height: 40px;
+          line-height: 40px;
+          color: #333;
+          font-size: 14px;
+          border-bottom: 1px solid #f7f7f8;
 
-        .more {
-          float: right;
-          padding-left: 20px;
-          font-size: 24px;
-          color: #999;
-        }
-      }
+          .more {
+            float: right;
+            padding-left: 20px;
+            font-size: 14px;
+            color: #999;
 
-      .more {
-        &::after {
-          font-family: 'erabbit' !important;
-          content: '\e6c2';
+            .var-icon {
+              vertical-align: middle;
+            }
+          }
         }
       }
 
@@ -180,35 +228,35 @@ import BottomBar from '@/components/BottomBar/index.vue'
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        padding: 20px 0;
+        padding: 10px 0;
 
         .goods {
-          width: 150px;
-          margin: 0px 30px 20px 0;
+          width: calc((100% - 20px) / 3);
+          margin: 0 10px 10px 0;
 
           &:nth-child(3n) {
             margin-right: 0;
           }
 
           image {
-            width: 150px;
-            height: 150px;
+            width: 100%;
+            height: 100%;
           }
 
           .name {
             padding: 5px;
-            font-size: 22px;
+            font-size: 12px;
             color: #333;
           }
 
           .price {
             padding: 5px;
-            font-size: 18px;
+            font-size: 12px;
             color: #cf4444;
           }
 
           .number {
-            font-size: 24px;
+            font-size: 12px;
             margin-left: 2px;
           }
         }
