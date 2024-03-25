@@ -2,7 +2,7 @@
   <div class="swiper-box">
     <var-swipe class="swipe-example" :autoplay="2000">
       <var-swipe-item v-for="item in list" :key="item.id">
-        <img class="swipe-example-image" :src="item.imgUrl">
+        <var-image class="swipe-example-image" :src="item.imgUrl"></var-image>
       </var-swipe-item>
     </var-swipe>
   </div>
