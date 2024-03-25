@@ -10,13 +10,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router';
+import { useBottomBarStore } from '@/store';
+import { storeToRefs } from 'pinia';
 
+// 提取 pinia 仓库中的数据
+const { activeBar } = storeToRefs(useBottomBarStore())
+const { changeActiveBar } = useBottomBarStore()
+// 路由
 const router = useRouter()
+// 当前底部导航栏选中的值
 const active = ref(0)
 
+onMounted(() => {
+  active.value = activeBar.value
+})
+
+// 底部导航栏的切换
 const handleChange = (active: number) => {
+  changeActiveBar(active)
   switch (active) {
     case 0:
       router.push({ name: 'Index' })
