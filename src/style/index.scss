@@ -1,0 +1,9 @@
+
+/* 全局样式文件，比如 styles.css 或 app.css */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top); /* 适配安全区域顶部 */
+}
+ 
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom); /* 适配安全区域底部 */
+}
