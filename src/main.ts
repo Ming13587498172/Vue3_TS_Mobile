@@ -13,9 +13,6 @@ import router from '@/router/index'
 import '@varlet/ui/es/snackbar/style/index'
 
 import pinia from './store'
-// import { createPinia } from 'pinia'
-// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-
 
 // 全局组件
 import BottomBar from '@/components/BottomBar/index.vue'  // 底部导航栏
@@ -26,8 +23,6 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 
-// const pinia = createPinia()
-// pinia.use(piniaPluginPersistedstate)
 app.component('BottomBar', BottomBar)
 app.component('Swiper', Swiper)
 
